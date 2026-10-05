@@ -33,25 +33,73 @@ const r1 = readline.createInterface({
    output: process.stdout
 
 });
-  
-r1.question("What do you Guess? ", (guess) =>{
-   guess = Number(guess)
-   
-   while (true) {
-      
-   console.log(` I Guess ${guess}`);
-   if (guess < secretNumber) {
-      console.log("Too Low");
-   }
-   else if (guess > secretNumber) {
-      console.log("Too High");
-      
-   }
-   else{
-      console.log("Correct! You GUessed it!");
-            
-   }}
-   r1.close();
-   
-})
+let attempts = 0;
 
+function askForGuess() {
+
+    // ask user
+    r1.question("What is your Guess between (1 - 100) ? ", (guess) => {
+      console.log(guess);
+      console.log(`Number of Atempts is ${attempts + 1} out of 10.`);
+      
+      // convert input to number
+    guess = Number(guess)
+    if (guess <= 0 || guess > 100) {
+      console.log("Plese enter a valid Number!");
+      askForGuess();
+      return;
+      
+    }
+    if (!Number.isInteger(guess)) {
+      console.log("Please enter a valid Integer");
+      askForGuess();
+      return;
+            
+    }
+
+    //Check
+    if (Number.isNaN(guess)) {
+      console.log("Please enter a valid number!");
+      askForGuess();
+      return;
+      
+      
+    }
+    //Attepmts Check
+    attempts++;
+    // send number to checkGuess()
+    checkGuess(guess)
+
+    })
+}
+
+function checkGuess(guess) {
+   if (attempts === 10) {
+      console.log("Game Over!");
+      r1.close();
+      return;
+   }
+   
+    if (guess < secretNumber) {
+        // Too Low
+        console.log(`Your Entered Number ${guess} is Too Low`);
+        askForGuess();
+    }
+
+    else if (guess > secretNumber) {
+        // Too High
+        console.log(`Your Entered Number ${guess} is Too High`);
+      askForGuess();
+    }
+
+    else {
+        // Correct
+        console.log("You Did It Congrats");
+        console.log(`You did it in ${attempts} Attempts`);
+        
+        r1.close();
+        
+    }
+}
+
+askForGuess();
